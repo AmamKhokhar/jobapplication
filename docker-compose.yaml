@@ -1,0 +1,35 @@
+services:
+  postgres:
+    container_name: postgres-container
+    image: postgres
+    environment:
+      POSTGRES_USER: amam
+      POSTGRES_PASSWORD: amam
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres-network
+    restart: unless-stopped
+  pgadmin:
+    container_name: pgadmin-container
+    image: dpage/pgadmin4
+    networks:
+      - postgres-network
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-amam}
+      PGADMIN_CONFIG_SERVER_MODE: False
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+networks:
+  postgres-network:
+    driver: bridge
+volumes:
+  postgres:
+  pgadmin:
